@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://igad63lnj4n5"]
+
+[ext_resource type="Script" uid="uid://cic8ga01mbndm" path="res://Interaction/Items/CollectibleItem.gd" id="1_rt48h"]
+[ext_resource type="PackedScene" uid="uid://dp85m2jv18h6" path="res://Models/melon.glb" id="2_lmq5d"]
+
+[node name="CollectibleItem" type="StaticBody3D"]
+collision_layer = 8
+script = ExtResource("1_rt48h")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+
+[node name="Sketchfab_Scene2" parent="." instance=ExtResource("2_lmq5d")]
+transform = Transform3D(7.33254, 0, 0, 0, 8.72536, 0, 0, 0, 6.58571, -0.00648463, 0.00056906, -0.0278412)

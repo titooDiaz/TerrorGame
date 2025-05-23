@@ -1,0 +1,31 @@
+[gd_scene load_steps=7 format=3 uid="uid://co48rwvrjwwko"]
+
+[ext_resource type="PackedScene" uid="uid://igad63lnj4n5" path="res://Interaction/Items/CollectibleItem.tscn" id="1_iwgvt"]
+[ext_resource type="Script" uid="uid://dw13mkgirs8wk" path="res://Inventory/CraftItemResource.gd" id="2_nnlo1"]
+[ext_resource type="Script" uid="uid://bt8f2u5nfo8b" path="res://Inventory/ItemResource.gd" id="2_qp5ds"]
+[ext_resource type="Texture2D" uid="uid://yycybdwdybd2" path="res://Interaction/Items/Key/Key.png" id="3_1kq3t"]
+
+[sub_resource type="Resource" id="Resource_017j7"]
+script = ExtResource("2_qp5ds")
+item_name = "Key1"
+texture = ExtResource("3_1kq3t")
+quantity = 1
+crafted_items = Array[ExtResource("2_nnlo1")]([])
+description = "Description:
+	An old, tarnished key with intricate engravings. Its surface is rough, and the rust has eaten away at its edges. The key emits a faint, eerie hum when touched.
+Backstory:
+	This key once belonged to the mansion’s caretaker, who mysteriously vanished. Legend has it that it opens a hidden chamber where dark secrets lie."
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_aysgb"]
+radius = 0.0750485
+height = 0.404097
+
+[node name="CollectibleItem" instance=ExtResource("1_iwgvt")]
+item = SubResource("Resource_017j7")
+
+[node name="CollisionShape3D" parent="." index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.142795, 0)
+shape = SubResource("CapsuleShape3D_aysgb")
+
+[node name="Sketchfab_Scene" parent="." index="1"]
+transform = Transform3D(0.000339138, 0, 0, 0, 0.000501691, 0, 0, 0, 0.000239175, 0, 0, 0.00760078)
