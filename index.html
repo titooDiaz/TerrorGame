@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Horror H</title>
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700&family=Orbitron:wght@600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="glitch-wrapper">
+    <h1 class="glitch" data-text="HORROR H">HORROR H</h1>
+  </div>
+  <p class="tagline">El miedo es solo el comienzo...</p>
+  <button id="startBtn">Entrar al horror</button>
+
+  <div class="overlay" id="overlay">
+    <p class="scream">¡AHHHHH!</p>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
+
+<style>
+  * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: radial-gradient(ellipse at center, #0a0a0a 0%, #000000 100%);
+  color: #e00;
+  font-family: 'Orbitron', sans-serif;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.glitch-wrapper {
+  position: relative;
+}
+
+.glitch {
+  font-size: 4rem;
+  color: #e00;
+  text-align: center;
+  position: relative;
+  animation: flicker 2s infinite;
+  font-family: 'Unbounded', cursive;
+}
+
+.glitch::before,
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  left: 0;
+  width: 100%;
+  color: #0ff;
+  background: black;
+  overflow: hidden;
+  clip: rect(0, 900px, 0, 0);
+}
+
+.glitch::before {
+  animation: glitchTop 2s infinite linear alternate-reverse;
+}
+
+.glitch::after {
+  color: #f0f;
+  animation: glitchBottom 1.5s infinite linear alternate-reverse;
+}
+
+.tagline {
+  margin-top: 20px;
+  font-size: 1.2rem;
+  letter-spacing: 2px;
+  color: #aaa;
+  text-shadow: 0 0 5px red;
+}
+
+button {
+  margin-top: 40px;
+  padding: 10px 30px;
+  font-size: 1rem;
+  border: none;
+  background: transparent;
+  color: #f00;
+  border: 2px solid #f00;
+  cursor: pointer;
+  transition: background 0.3s, color 0.3s;
+}
+
+button:hover {
+  background: #f00;
+  color: black;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: black;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.scream {
+  color: red;
+  font-size: 4rem;
+  font-family: 'Unbounded', cursive;
+  animation: shake 0.5s infinite;
+}
+
+@keyframes flicker {
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+    opacity: 1;
+  }
+  20%, 24%, 55% {
+    opacity: 0.2;
+  }
+}
+
+@keyframes glitchTop {
+  0% {
+    clip: rect(0, 999px, 0, 0);
+    transform: translate(0, 0);
+  }
+  50% {
+    clip: rect(0, 999px, 20px, 0);
+    transform: translate(-5px, -5px);
+  }
+  100% {
+    clip: rect(0, 999px, 0, 0);
+    transform: translate(5px, 5px);
+  }
+}
+
+@keyframes glitchBottom {
+  0% {
+    clip: rect(0, 999px, 0, 0);
+    transform: translate(0, 0);
+  }
+  50% {
+    clip: rect(20px, 999px, 60px, 0);
+    transform: translate(5px, -5px);
+  }
+  100% {
+    clip: rect(0, 999px, 0, 0);
+    transform: translate(-5px, 5px);
+  }
+}
+
+@keyframes shake {
+  0% { transform: translate(1px, 1px); }
+  25% { transform: translate(-1px, -2px); }
+  50% { transform: translate(-3px, 0px); }
+  75% { transform: translate(3px, 2px); }
+  100% { transform: translate(1px, -1px); }
+}
+
+</style>
+
+<script>
+  const button = document.getElementById('startBtn');
+const overlay = document.getElementById('overlay');
+
+button.addEventListener('click', () => {
+  overlay.style.display = 'flex';
+  setTimeout(() => {
+    overlay.style.display = 'none';
+  }, 2000); // Desaparece después de 2 segundos
+});
+
+</script>
