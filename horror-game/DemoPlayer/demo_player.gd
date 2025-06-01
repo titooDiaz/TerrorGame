@@ -4,10 +4,14 @@ var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 @onready var controller = $PlayerController
 @export var SPEED = 5.0
 @export var JUMP_VELOCITY = 4.5
+@export var RUN_SPEED = 7.0
 
-@export var mouse_sensibility = 1200
+@export var mouse_sensibility = 800
 @export var ladder_height_subtract = 1
 
+var bobbing_amount = 0.05
+var bobbing_speed = 10.0
+var bobbing_timer = 0.0
 var min_camera_x = deg_to_rad(-90)
 var max_camera_x =  deg_to_rad(90)
 var camera
@@ -23,6 +27,11 @@ var tween
 
 func _ready():
 	camera = controller.camera
+	var stream = $"../Enviroment/Wind".stream
+	if stream is AudioStream:
+		stream.loop = true
+	$"../Enviroment/Wind".play()
+
 
 func _physics_process(delta):
 	match current_mode:
@@ -40,12 +49,37 @@ func walk_process(delta):
 	
 	var input_dir = Input.get_vector("moveLeft", "moveRight", "moveUp", "moveDown")
 	var direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
+	
+	var is_running = Input.is_action_pressed("Run")
+	var current_speed = RUN_SPEED if is_running else SPEED
+
 	if direction:
-		velocity.x = direction.x * SPEED
-		velocity.z = direction.z * SPEED
+		velocity.x = direction.x * current_speed
+		velocity.z = direction.z * current_speed
 	else:
 		velocity.x = move_toward(velocity.x, 0, SPEED)
 		velocity.z = move_toward(velocity.z, 0, SPEED)
+
+
+		
+		# Efecto de balanceo
+	if direction and is_on_floor():
+		bobbing_timer += delta * bobbing_speed
+		var bob_offset = sin(bobbing_timer) * bobbing_amount
+		controller.camera.transform.origin.y = bob_offset
+
+		# Reproducir pasos
+		if not $"../Enviroment/Walk".playing:
+			$"../Enviroment/Walk".pitch_scale = randf_range(0.9, 1.1)
+			$"../Enviroment/Walk".play()
+	else:
+		bobbing_timer = 0
+		controller.camera.transform.origin.y = 0
+
+		# Detener pasos
+		if $"../Enviroment/Walk".playing:
+			$"../Enviroment/Walk".stop()
+
 
 	move_and_slide()
 

@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://co48rwvrjwwko"]
+[gd_scene load_steps=8 format=3 uid="uid://co48rwvrjwwko"]
 
 [ext_resource type="PackedScene" uid="uid://igad63lnj4n5" path="res://Interaction/Items/CollectibleItem.tscn" id="1_iwgvt"]
 [ext_resource type="Script" uid="uid://dw13mkgirs8wk" path="res://Inventory/CraftItemResource.gd" id="2_nnlo1"]
 [ext_resource type="Script" uid="uid://bt8f2u5nfo8b" path="res://Inventory/ItemResource.gd" id="2_qp5ds"]
 [ext_resource type="Texture2D" uid="uid://yycybdwdybd2" path="res://Interaction/Items/Key/Key.png" id="3_1kq3t"]
+[ext_resource type="PackedScene" uid="uid://coj8tuu17hc2g" path="res://Interaction/Items/Key/key.glb" id="5_sar3e"]
 
 [sub_resource type="Resource" id="Resource_017j7"]
 script = ExtResource("2_qp5ds")
@@ -24,8 +25,11 @@ height = 0.404097
 item = SubResource("Resource_017j7")
 
 [node name="CollisionShape3D" parent="." index="0"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.142795, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0889545, 0)
 shape = SubResource("CapsuleShape3D_aysgb")
 
-[node name="Sketchfab_Scene" parent="." index="1"]
-transform = Transform3D(0.000339138, 0, 0, 0, 0.000501691, 0, 0, 0, 0.000239175, 0, 0, 0.00760078)
+[node name="Sketchfab_Scene2" parent="." index="1"]
+transform = Transform3D(8.55606, 0, 0, 0, 3.43252, 0, 0, 0, 6.58571, 0.024702, 0.0382949, -0.0278412)
+
+[node name="Sketchfab_Scene" parent="." index="2" instance=ExtResource("5_sar3e")]
+transform = Transform3D(-0.00780693, 0, 0, 0, 0.0116071, 0, 0, 0, -0.0153644, 0.0598683, 0, 1.39476)
