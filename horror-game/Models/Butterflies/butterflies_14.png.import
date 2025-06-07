@@ -1,0 +1,38 @@
+[remap]
+
+importer="texture"
+type="CompressedTexture2D"
+uid="uid://v4ivs2dc3eam"
+path.s3tc="res://.godot/imported/butterflies_14.png-dfda703c682ce6db6937283b5b8ee589.s3tc.ctex"
+metadata={
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
+}
+generator_parameters={
+"md5": "5f8d710c62bcb82f17edab6c9fa10d40"
+}
+
+[deps]
+
+source_file="res://Models/Butterflies/butterflies_14.png"
+dest_files=["res://.godot/imported/butterflies_14.png-dfda703c682ce6db6937283b5b8ee589.s3tc.ctex"]
+
+[params]
+
+compress/mode=2
+compress/high_quality=false
+compress/lossy_quality=0.7
+compress/hdr_compression=1
+compress/normal_map=0
+compress/channel_pack=0
+mipmaps/generate=true
+mipmaps/limit=-1
+roughness/mode=0
+roughness/src_normal=""
+process/fix_alpha_border=true
+process/premult_alpha=false
+process/normal_map_invert_y=false
+process/hdr_as_srgb=false
+process/hdr_clamp_exposure=false
+process/size_limit=0
+detect_3d/compress_to=0
