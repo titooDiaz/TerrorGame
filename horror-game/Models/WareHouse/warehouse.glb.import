@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://2syc8l7vplu2"
-path="res://.godot/imported/home.glb-c106a51dcadc1c9f9b99834ea85f9bab.scn"
+uid="uid://cupn3wcix107d"
+path="res://.godot/imported/warehouse.glb-77ffd9f51c9265a554c8783e57298354.scn"
 
 [deps]
 
-source_file="res://home.glb"
-dest_files=["res://.godot/imported/home.glb-c106a51dcadc1c9f9b99834ea85f9bab.scn"]
+source_file="res://Models/WareHouse/warehouse.glb"
+dest_files=["res://.godot/imported/warehouse.glb-77ffd9f51c9265a554c8783e57298354.scn"]
 
 [params]
 
