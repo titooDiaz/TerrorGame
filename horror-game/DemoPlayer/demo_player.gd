@@ -46,12 +46,22 @@ func walk_process(delta):
 
 	if Input.is_action_just_pressed("Jump") and is_on_floor():
 		velocity.y = JUMP_VELOCITY
-	
+
 	var input_dir = Input.get_vector("moveLeft", "moveRight", "moveUp", "moveDown")
 	var direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
-	
+
 	var is_running = Input.is_action_pressed("Run")
-	var current_speed = RUN_SPEED if is_running else SPEED
+	var is_crouching = Input.is_action_pressed("Crouch")  # ← Asegúrate de mapear esto en el input
+	var is_moving_backwards = input_dir.y < 0
+
+	var current_speed = SPEED
+	
+	if is_crouching:
+		current_speed = 1.5  # Muy lento
+	elif is_running:
+		current_speed = RUN_SPEED
+	elif is_moving_backwards:
+		current_speed = SPEED * 0.6  # Más lento al ir hacia atrás
 
 	if direction:
 		velocity.x = direction.x * current_speed
@@ -60,28 +70,25 @@ func walk_process(delta):
 		velocity.x = move_toward(velocity.x, 0, SPEED)
 		velocity.z = move_toward(velocity.z, 0, SPEED)
 
-
-		
-		# Efecto de balanceo
+	# Bobbing
 	if direction and is_on_floor():
 		bobbing_timer += delta * bobbing_speed
 		var bob_offset = sin(bobbing_timer) * bobbing_amount
 		controller.camera.transform.origin.y = bob_offset
 
-		# Reproducir pasos
+		# Sonido de pasos
 		if not $"../Enviroment/Walk".playing:
-			$"../Enviroment/Walk".pitch_scale = randf_range(0.9, 1.1)
+			$"../Enviroment/Walk".pitch_scale = randf_range(1.0, 1.2) if is_running else randf_range(0.9, 1.1)
+			$"../Enviroment/Walk".volume_db = -2 if is_running else -6
 			$"../Enviroment/Walk".play()
 	else:
 		bobbing_timer = 0
 		controller.camera.transform.origin.y = 0
-
-		# Detener pasos
 		if $"../Enviroment/Walk".playing:
 			$"../Enviroment/Walk".stop()
 
-
 	move_and_slide()
+
 
 func ladder_process(_delta):
 	
