@@ -32,6 +32,19 @@ func _ready():
 		stream.loop = true
 	$"../Enviroment/Wind".play()
 
+	# Esperar 10 segundos y cambiar de escena
+	change_scene_after_delay()
+
+func change_scene_after_delay() -> void:
+	await get_tree().create_timer(10.0).timeout
+	var new_scene = load("res://levels/playground.tscn")
+	if new_scene:
+		get_tree().change_scene(new_scene)
+	else:
+		print("⚠️ La escena no se pudo cargar. Verifica el path.")
+
+
+
 
 func _physics_process(delta):
 	match current_mode:
@@ -138,4 +151,3 @@ func set_on_ladder(on_ladder, height,reference: Node3D):
 	else:
 		set_player_mode(PLAYER_MODES.WALK)
 	ladder_height = height
-	
