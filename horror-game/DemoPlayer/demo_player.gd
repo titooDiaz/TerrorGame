@@ -37,9 +37,9 @@ func _ready():
 
 func change_scene_after_delay() -> void:
 	await get_tree().create_timer(10.0).timeout
-	var new_scene = load("res://levels/playground.tscn")
+	var new_scene = load("res://levels/city.tscn")
 	if new_scene:
-		get_tree().change_scene(new_scene)
+		get_tree().change_scene_to_packed(new_scene)
 	else:
 		print("⚠️ La escena no se pudo cargar. Verifica el path.")
 
