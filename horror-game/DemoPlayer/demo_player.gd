@@ -40,7 +40,7 @@ func _ready():
 	$"../Enviroment/Wind".play()
 
 	# Esperar 10 segundos y cambiar de escena
-	#change_scene_after_delay()
+	change_scene_after_delay()
 
 func change_scene_after_delay() -> void:
 	await get_tree().create_timer(10.0).timeout

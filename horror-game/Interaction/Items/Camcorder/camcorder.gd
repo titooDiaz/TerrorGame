@@ -153,4 +153,3 @@ func _on_timer_timeout():
 	var elapsed_str = format_elapsed_time(elapsed_time)
 	rec_time_label.text = elapsed_str
 	
-
