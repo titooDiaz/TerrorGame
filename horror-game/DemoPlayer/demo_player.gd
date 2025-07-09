@@ -9,6 +9,13 @@ var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 @export var mouse_sensibility = 800
 @export var ladder_height_subtract = 1
 
+# detector radio
+
+@onready var SeeCast3D: RayCast3D = $PlayerController/Head/Camcorder/SeeCast3D # ¡Asegúrate que esta ruta sea correcta para tu RayCast3D!
+@onready var interact_label: Label = $PlayerController/Head/Camcorder/SeeCast3D/CanvasLayer/BoxContainer/LabelE
+
+@export var INTERACTION_DISTANCE: float = 2.5 # <-- ¡NUEVO! Distancia máxima para interactuar
+
 var bobbing_amount = 0.05
 var bobbing_speed = 10.0
 var bobbing_timer = 0.0
@@ -33,7 +40,7 @@ func _ready():
 	$"../Enviroment/Wind".play()
 
 	# Esperar 10 segundos y cambiar de escena
-	change_scene_after_delay()
+	#change_scene_after_delay()
 
 func change_scene_after_delay() -> void:
 	await get_tree().create_timer(10.0).timeout
@@ -47,6 +54,32 @@ func change_scene_after_delay() -> void:
 
 
 func _physics_process(delta):
+	# --- Inicio de la Lógica de Detección de Interacción ---
+	var is_looking_at_interactable_and_close = false
+
+	if SeeCast3D.is_colliding():
+		var collider = SeeCast3D.get_collider() # Obtiene el nodo que el rayo golpeó
+
+		# Verificar si el objeto golpeado es un StaticBody3D (o el tipo de tu radio)
+		if collider and (collider.name == "radio" or collider.name == "OtroObjetoInteractuable"): # Puedes añadir más condiciones si necesitas diferenciar objetos
+			# Calcular la distancia entre el jugador y el objeto detectado
+			# Usamos global_position para obtener las coordenadas en el mundo
+			var distance_to_collider = global_position.distance_to(collider.global_position)
+
+			# Si está cerca Y el rayo lo está mirando
+			if distance_to_collider <= INTERACTION_DISTANCE:
+				is_looking_at_interactable_and_close = true
+				# Opcional: Si quieres interactuar al presionar "Interactar"
+				if Input.is_action_just_pressed("Interactar"):
+					print("¡Interaccionando con el radio!")
+					# Aquí puedes llamar a una función en el 'Radio' para que haga algo
+					# Por ejemplo: collider.interact()
+					# O puedes emitir una señal desde aquí
+
+	# Mostrar u ocultar la LabelE de la UI del jugador
+	interact_label.visible = is_looking_at_interactable_and_close # <-- ¡CAMBIO CLAVE AQUÍ!
+	# --- Fin de la Lógica de Detección de Interacción ---
+	
 	match current_mode:
 		PLAYER_MODES.WALK:
 			walk_process(delta)
