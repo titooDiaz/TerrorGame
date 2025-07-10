@@ -87,28 +87,52 @@ func _physics_process(delta):
 			ladder_process(delta)
 
 func walk_process(delta):
-	if not is_on_floor():
-		velocity.y -= gravity * delta
+	var anim_player = null
 
-	if Input.is_action_just_pressed("Jump") and is_on_floor():
-		velocity.y = JUMP_VELOCITY
+	if is_instance_valid($man):
+		anim_player = $man.get_node_or_null("AnimationPlayer")
 
+	if not anim_player:
+		return
+
+	# Activar loop solo una vez (idealmente haz esto en _ready())
+	for anim_name in ["Rig|idle", "Rig|walk", "Rig|run"]:
+		if anim_player.has_animation(anim_name):
+			anim_player.get_animation(anim_name).loop = true
+
+	# Dirección y entrada
 	var input_dir = Input.get_vector("moveLeft", "moveRight", "moveUp", "moveDown")
 	var direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 
+	# Aplica gravedad
+	if not is_on_floor():
+		velocity.y -= gravity * delta
+
+	# Salto
+	if Input.is_action_just_pressed("Jump") and is_on_floor():
+		velocity.y = JUMP_VELOCITY
+		if anim_player.has_animation("Rig|jump"):
+			anim_player.play("Rig|jump")
+
+	# Estado de movimiento
 	var is_running = Input.is_action_pressed("Run")
-	var is_crouching = Input.is_action_pressed("Crouch")  # ← Asegúrate de mapear esto en el input
+	var is_crouching = Input.is_action_pressed("Crouch")
 	var is_moving_backwards = input_dir.y < 0
 
 	var current_speed = SPEED
-	
 	if is_crouching:
-		current_speed = 1.5  # Muy lento
+		current_speed = 1.5
 	elif is_running:
 		current_speed = RUN_SPEED
 	elif is_moving_backwards:
-		current_speed = SPEED * 0.6  # Más lento al ir hacia atrás
+		current_speed = SPEED * 0.6
 
+	# Rotar el cuerpo según la cámara en el eje Y
+	if direction:
+		var target_rot = controller.camera.global_transform.basis.get_euler().y
+		$man.rotation.y = lerp_angle($man.rotation.y, target_rot, delta * 10.0)
+
+	# Movimiento horizontal
 	if direction:
 		velocity.x = direction.x * current_speed
 		velocity.z = direction.z * current_speed
@@ -116,13 +140,29 @@ func walk_process(delta):
 		velocity.x = move_toward(velocity.x, 0, SPEED)
 		velocity.z = move_toward(velocity.z, 0, SPEED)
 
-	# Bobbing
+	# Animaciones según estado
+	var next_anim = ""
+
+	if not is_on_floor():
+		next_anim = "Rig|jump"
+	elif direction:
+		if is_running:
+			next_anim = "Rig|run"
+		else:
+			next_anim = "Rig|walk"
+
+	else:
+		next_anim = "Rig|idle"
+
+	if anim_player.has_animation(next_anim) and anim_player.current_animation != next_anim:
+		anim_player.play(next_anim)
+
+	# Bobbing (cabeceo)
 	if direction and is_on_floor():
 		bobbing_timer += delta * bobbing_speed
 		var bob_offset = sin(bobbing_timer) * bobbing_amount
 		controller.camera.transform.origin.y = bob_offset
 
-		# Sonido de pasos
 		if not $"../Enviroment/Walk".playing:
 			$"../Enviroment/Walk".pitch_scale = randf_range(1.0, 1.2) if is_running else randf_range(0.9, 1.1)
 			$"../Enviroment/Walk".volume_db = -2 if is_running else -6
@@ -134,6 +174,7 @@ func walk_process(delta):
 			$"../Enviroment/Walk".stop()
 
 	move_and_slide()
+
 
 
 func ladder_process(_delta):
