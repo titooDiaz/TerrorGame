@@ -61,7 +61,7 @@ func _physics_process(delta):
 		var collider = SeeCast3D.get_collider() # Obtiene el nodo que el rayo golpeó
 
 		# Verificar si el objeto golpeado es un StaticBody3D (o el tipo de tu radio)
-		if collider and (collider.name == "radio" or collider.name == "OtroObjetoInteractuable"): # Puedes añadir más condiciones si necesitas diferenciar objetos
+		if collider and (collider.name == "radio"): # Puedes añadir más condiciones si necesitas diferenciar objetos
 			# Calcular la distancia entre el jugador y el objeto detectado
 			# Usamos global_position para obtener las coordenadas en el mundo
 			var distance_to_collider = global_position.distance_to(collider.global_position)
@@ -70,11 +70,14 @@ func _physics_process(delta):
 			if distance_to_collider <= INTERACTION_DISTANCE:
 				is_looking_at_interactable_and_close = true
 				# Opcional: Si quieres interactuar al presionar "Interactar"
-				if Input.is_action_just_pressed("Interactar"):
+				if Input.is_action_just_pressed("Interact"):
 					print("¡Interaccionando con el radio!")
-					# Aquí puedes llamar a una función en el 'Radio' para que haga algo
-					# Por ejemplo: collider.interact()
-					# O puedes emitir una señal desde aquí
+					
+					if collider.has_method("interact"):
+						collider.interact()
+					else:
+						print("Error: El objeto '", collider.name, "' no tiene la función 'interact()'.")
+					# --- Fin del cambio ---
 
 	# Mostrar u ocultar la LabelE de la UI del jugador
 	interact_label.visible = is_looking_at_interactable_and_close # <-- ¡CAMBIO CLAVE AQUÍ!
