@@ -40,7 +40,7 @@ func _ready():
 	$"../Enviroment/Wind".play()
 
 	# Esperar 10 segundos y cambiar de escena
-	change_scene_after_delay()
+	#change_scene_after_delay()
 
 func change_scene_after_delay() -> void:
 	await get_tree().create_timer(10.0).timeout
@@ -92,36 +92,38 @@ func _physics_process(delta):
 func walk_process(delta):
 	var anim_player = null
 
+	# Get the AnimationPlayer node safely
 	if is_instance_valid($man):
 		anim_player = $man.get_node_or_null("AnimationPlayer")
 
 	if not anim_player:
 		return
 
-	# Activar loop solo una vez (idealmente haz esto en _ready())
+	# Ensure animations loop (ideally done once in _ready())
 	for anim_name in ["Rig|idle", "Rig|walk", "Rig|run"]:
 		if anim_player.has_animation(anim_name):
 			anim_player.get_animation(anim_name).loop = true
 
-	# Dirección y entrada
+	# Get movement input vector from key mappings
 	var input_dir = Input.get_vector("moveLeft", "moveRight", "moveUp", "moveDown")
 	var direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 
-	# Aplica gravedad
+	# Apply gravity
 	if not is_on_floor():
 		velocity.y -= gravity * delta
 
-	# Salto
+	# Jumping
 	if Input.is_action_just_pressed("Jump") and is_on_floor():
 		velocity.y = JUMP_VELOCITY
 		if anim_player.has_animation("Rig|jump"):
 			anim_player.play("Rig|jump")
 
-	# Estado de movimiento
+	# Check movement states
 	var is_running = Input.is_action_pressed("Run")
 	var is_crouching = Input.is_action_pressed("Crouch")
 	var is_moving_backwards = input_dir.y < 0
 
+	# Set current movement speed
 	var current_speed = SPEED
 	if is_crouching:
 		current_speed = 1.5
@@ -130,12 +132,9 @@ func walk_process(delta):
 	elif is_moving_backwards:
 		current_speed = SPEED * 0.6
 
-	# Rotar el cuerpo según la cámara en el eje Y
-	if direction:
-		var target_rot = controller.camera.global_transform.basis.get_euler().y
-		$man.rotation.y = lerp_angle($man.rotation.y, target_rot, delta * 10.0)
+	# 🚫 Character rotation removed here
 
-	# Movimiento horizontal
+	# Move horizontally
 	if direction:
 		velocity.x = direction.x * current_speed
 		velocity.z = direction.z * current_speed
@@ -143,9 +142,8 @@ func walk_process(delta):
 		velocity.x = move_toward(velocity.x, 0, SPEED)
 		velocity.z = move_toward(velocity.z, 0, SPEED)
 
-	# Animaciones según estado
+	# Choose animation based on state
 	var next_anim = ""
-
 	if not is_on_floor():
 		next_anim = "Rig|jump"
 	elif direction:
@@ -153,19 +151,19 @@ func walk_process(delta):
 			next_anim = "Rig|run"
 		else:
 			next_anim = "Rig|walk"
-
 	else:
 		next_anim = "Rig|idle"
 
 	if anim_player.has_animation(next_anim) and anim_player.current_animation != next_anim:
 		anim_player.play(next_anim)
 
-	# Bobbing (cabeceo)
+	# Head bobbing effect
 	if direction and is_on_floor():
 		bobbing_timer += delta * bobbing_speed
 		var bob_offset = sin(bobbing_timer) * bobbing_amount
 		controller.camera.transform.origin.y = bob_offset
 
+		# Play walk sound
 		if not $"../Enviroment/Walk".playing:
 			$"../Enviroment/Walk".pitch_scale = randf_range(1.0, 1.2) if is_running else randf_range(0.9, 1.1)
 			$"../Enviroment/Walk".volume_db = -2 if is_running else -6
@@ -176,8 +174,8 @@ func walk_process(delta):
 		if $"../Enviroment/Walk".playing:
 			$"../Enviroment/Walk".stop()
 
+	# Final movement
 	move_and_slide()
-
 
 
 func ladder_process(_delta):

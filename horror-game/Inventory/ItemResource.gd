@@ -24,4 +24,3 @@ static func create_new_item(item: ItemResource):
 	new_item.mesh = item.mesh
 	
 	return new_item
-
